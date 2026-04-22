@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['farm_id', 'type', 'category_id', 'amount', 'description', 'transaction_date', 'reference'])]
+#[Fillable(['farm_id', 'type', 'expense_category_id', 'income_category_id', 'amount', 'description', 'transaction_date', 'reference'])]
 class Transaction extends Model
 {
     use SoftDeletes;
@@ -27,11 +27,11 @@ class Transaction extends Model
 
     public function expenseCategory(): BelongsTo
     {
-        return $this->belongsTo(ExpenseCategory::class, 'category_id');
+        return $this->belongsTo(ExpenseCategory::class, 'expense_category_id');
     }
 
     public function incomeCategory(): BelongsTo
     {
-        return $this->belongsTo(IncomeCategory::class, 'category_id');
+        return $this->belongsTo(IncomeCategory::class, 'income_category_id');
     }
 }

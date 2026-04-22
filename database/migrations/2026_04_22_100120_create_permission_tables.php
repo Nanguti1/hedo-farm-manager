@@ -13,14 +13,9 @@ return new class extends Migration
     {
         $tableNames = config('permission.table_names');
         $columnNames = config('permission.column_names');
-        $teams = config('permission.teams');
 
         if (empty($tableNames)) {
             throw new \Exception('Error: config/permission.php not loaded. Run [php artisan config:clear] and try again.');
-        }
-
-        if ($teams && empty($columnNames['team_foreign_key_by_default'])) {
-            throw new \Exception('Error: team_foreign_key_by_default on config/permission.php not loaded. Run [php artisan config:clear] and try again.');
         }
 
         Schema::create($tableNames['permissions'], function (Blueprint $table) {
@@ -31,22 +26,15 @@ return new class extends Migration
             $table->unique(['name', 'guard_name']);
         });
 
-        Schema::create($tableNames['roles'], function (Blueprint $table) use ($teams, $columnNames) {
+        Schema::create($tableNames['roles'], function (Blueprint $table) {
             $table->id();
-            if ($teams || config('permission.testing')) {
-                $table->unsignedBigInteger($columnNames['team_foreign_key'])->nullable();
-            }
             $table->string('name');
             $table->string('guard_name');
             $table->timestamps();
-            if ($teams || config('permission.testing')) {
-                $table->unique([$columnNames['team_foreign_key'], 'name', 'guard_name']);
-            } else {
-                $table->unique(['name', 'guard_name']);
-            }
+            $table->unique(['name', 'guard_name']);
         });
 
-        Schema::create($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames, $columnNames, $teams) {
+        Schema::create($tableNames['model_has_permissions'], function (Blueprint $table) use ($tableNames, $columnNames) {
             $table->unsignedBigInteger('permission_id');
             $table->string('model_type');
             $table->unsignedBigInteger($columnNames['model_morph_key']);
@@ -57,20 +45,11 @@ return new class extends Migration
                 ->on($tableNames['permissions'])
                 ->onDelete('cascade');
 
-            if ($teams) {
-                $table->unsignedBigInteger($columnNames['team_foreign_key'])->nullable();
-                $table->index($columnNames['team_foreign_key'], 'model_has_permissions_team_foreign_key_index');
-                $table->foreign($columnNames['team_foreign_key'])
-                    ->references('id')
-                    ->on($tableNames['teams'])
-                    ->onDelete('cascade');
-            }
-
-            $table->primary(['permission_id', $columnNames['model_morph_key'], 'model_type', $columnNames['team_foreign_key'] ?? null],
+            $table->primary(['permission_id', $columnNames['model_morph_key'], 'model_type'],
                 'model_has_permissions_permission_model_type_primary');
         });
 
-        Schema::create($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames, $columnNames, $teams) {
+        Schema::create($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames, $columnNames) {
             $table->unsignedBigInteger('role_id');
             $table->string('model_type');
             $table->unsignedBigInteger($columnNames['model_morph_key']);
@@ -81,16 +60,7 @@ return new class extends Migration
                 ->on($tableNames['roles'])
                 ->onDelete('cascade');
 
-            if ($teams) {
-                $table->unsignedBigInteger($columnNames['team_foreign_key'])->nullable();
-                $table->index($columnNames['team_foreign_key'], 'model_has_roles_team_foreign_key_index');
-                $table->foreign($columnNames['team_foreign_key'])
-                    ->references('id')
-                    ->on($tableNames['teams'])
-                    ->onDelete('cascade');
-            }
-
-            $table->primary(['role_id', $columnNames['model_morph_key'], 'model_type', $columnNames['team_foreign_key'] ?? null],
+            $table->primary(['role_id', $columnNames['model_morph_key'], 'model_type'],
                 'model_has_roles_role_model_type_primary');
         });
 
@@ -121,9 +91,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permission_tables');
-    }
-};
+        $tableNames = config('permission.table_names');
+
+        if (empty($tableNames)) {
             throw new \Exception('Error: config/permission.php not found and defaults could not be loaded. Run [php artisan config:clear] and try again.');
         }
 
