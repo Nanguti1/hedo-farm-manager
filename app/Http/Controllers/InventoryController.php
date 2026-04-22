@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreInventoryItemRequest;
+use App\Models\InventoryCategory;
 use App\Models\InventoryItem;
 use App\Services\InventoryService;
 use Illuminate\Http\RedirectResponse;
@@ -32,7 +33,9 @@ class InventoryController extends Controller
     {
         $this->authorize('create inventory items');
 
-        return Inertia::render('Inventory/Create');
+        return Inertia::render('Inventory/Create', [
+            'categories' => InventoryCategory::query()->select('id', 'name')->orderBy('name')->get(),
+        ]);
     }
 
     public function store(StoreInventoryItemRequest $request): RedirectResponse

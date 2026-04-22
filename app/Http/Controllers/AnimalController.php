@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAnimalRequest;
 use App\Http\Requests\UpdateAnimalRequest;
 use App\Models\Animal;
+use App\Models\AnimalBreed;
+use App\Models\AnimalCategory;
 use App\Services\AnimalService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,7 +35,10 @@ class AnimalController extends Controller
     {
         $this->authorize('create', Animal::class);
 
-        return Inertia::render('Animals/Create');
+        return Inertia::render('Animals/Create', [
+            'breeds' => AnimalBreed::query()->select('id', 'name')->orderBy('name')->get(),
+            'categories' => AnimalCategory::query()->select('id', 'name')->orderBy('name')->get(),
+        ]);
     }
 
     public function store(StoreAnimalRequest $request): RedirectResponse
@@ -67,6 +72,8 @@ class AnimalController extends Controller
 
         return Inertia::render('Animals/Edit', [
             'animal' => $animal,
+            'breeds' => AnimalBreed::query()->select('id', 'name')->orderBy('name')->get(),
+            'categories' => AnimalCategory::query()->select('id', 'name')->orderBy('name')->get(),
         ]);
     }
 
@@ -104,7 +111,7 @@ class AnimalController extends Controller
             'cost' => 'nullable|numeric|min:0',
         ]);
 
-        $record = $this->animalService->recordHealth($animal, $validated);
+        $this->animalService->recordHealth($animal, $validated);
 
         return redirect()
             ->route('animals.show', $animal->id)

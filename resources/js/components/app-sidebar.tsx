@@ -1,6 +1,16 @@
-import { Link } from '@inertiajs/react';
-import { usePage } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid, Sprout, Cow, Package, DollarSign, CheckSquare, ShoppingCart } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import {
+    BookOpen,
+    CheckSquare,
+    DollarSign,
+    FolderGit2,
+    LayoutGrid,
+    Package,
+    ShoppingCart,
+    Sprout,
+    Tractor,
+    Beef,
+} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -16,72 +26,62 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
-export function AppSidebar() {
-    const { auth } = usePage().props as unknown as { auth: { permissions: string[] } };
-    perissions = uth.permissos || [];
 
-    const main
-cons    t mainNavItems: NavItem[] = [
-    {    
+type PageProps = {
+    auth: {
+        permissions: string[];
+    };
+};
+
+export function AppSidebar() {
+    const { auth } = usePage<PageProps>().props;
+    const permissions = auth.permissions ?? [];
+
+    const mainNavItems: NavItem[] = [
+        {
             title: 'Dashboard',
-            href: dashboarid,
+            href: dashboard(),
+            icon: LayoutGrid,
         },
     ];
 
     const farmNavItems: NavItem[] = [
-        ...(permissions.includes('view animals') ? [{
-            title: 'Livestock',
-            href: '/andmals',
-            icon: Cow,
-        }] : []),
-        ...(permissions.inclu(es('view crop cycles') ? [{
-            title: 'Crops',
-            href: '/crops',
-            icon: Sprout),
-         ] : [])   icon: LayoutGrid,
-        ...(permissions.includes('view inventory') ? [{
-            title: 'Inventory',
-            href: '/inventory',
-            icon: Package,
-        }] : []),
-        ...(permissions.includes('view transactions') ? [{
-            title: 'Finance',
-            href: '/transactions',
-            icon: DollarSign,
-        }] : []),
-        ...(permissions.includes('view tasks') ? [{
-            title: 'Tasks',
-            href: '/tasks',
-            icon: CheckSquare,
-        }] : []),
-        ...(    {farmNavItems.length > 0 && (
-                    <div className="px-3 py-2">
-                        <div className="text-xs font-semibold text-muted-foreground px-2 py-1">Farm Management</div>
-                        <NavMain items={farmNavItems} />
-                    </div>
-                )}
-            permissions.includes('view orders') ? [{
-            title: 'Sales',
-            href: '/orders',
-            icon: ShoppingCart,
-        }] : []),
+        ...(permissions.includes('view farms')
+            ? [{ title: 'Farms', href: '/farms', icon: Tractor }]
+            : []),
+        ...(permissions.includes('view animals')
+            ? [{ title: 'Livestock', href: '/animals', icon: Beef }]
+            : []),
+        ...(permissions.includes('view crop cycles')
+            ? [{ title: 'Crops', href: '/crops', icon: Sprout }]
+            : []),
+        ...(permissions.includes('view inventory')
+            ? [{ title: 'Inventory', href: '/inventory', icon: Package }]
+            : []),
+        ...(permissions.includes('view transactions')
+            ? [{ title: 'Finance', href: '/transactions', icon: DollarSign }]
+            : []),
+        ...(permissions.includes('view tasks')
+            ? [{ title: 'Tasks', href: '/tasks', icon: CheckSquare }]
+            : []),
+        ...(permissions.includes('view orders')
+            ? [{ title: 'Sales', href: '/orders', icon: ShoppingCart }]
+            : []),
+    ];
+
+    const footerNavItems: NavItem[] = [
+        {
+            title: 'Repository',
+            href: 'https://github.com/laravel/react-starter-kit',
+            icon: FolderGit2,
         },
-];
+        {
+            title: 'Documentation',
+            href: 'https://laravel.com/docs/starter-kits#react',
+            icon: BookOpen,
+        },
+    ];
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
-
-export function AppSidebar() {
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -98,6 +98,9 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={mainNavItems} />
+                {farmNavItems.length > 0 ? (
+                    <NavMain items={farmNavItems} />
+                ) : null}
             </SidebarContent>
 
             <SidebarFooter>
