@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\ProductBatch;
 use App\Services\SalesService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -57,9 +58,15 @@ class OrderController extends Controller
         $this->authorize('view', $order);
 
         $order = $this->salesService->getOrderById($order->id);
+        $farmId = auth()->user()->farm_id;
 
         return Inertia::render('Orders/Show', [
             'order' => $order,
+            'batches' => ProductBatch::query()
+                ->where('farm_id', $farmId)
+                ->latest('production_date')
+                ->limit(10)
+                ->get(),
         ]);
     }
 
