@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
-import { Edit, MapPin, Users, Cow, Wheat, Package } from 'lucide-react';
+import { Edit, MapPin, Users, Beef, Wheat, Package } from 'lucide-react';
 import type { Farm, User } from '@/types/farm';
 
 interface PageProps {
@@ -59,7 +59,7 @@ export default function FarmShow({ farm }: PageProps) {
                                 <p className="text-sm text-gray-500">Animals</p>
                                 <p className="text-2xl font-bold">{farm.animals_count ?? 0}</p>
                             </div>
-                            <Cow className="w-8 h-8 text-gray-400" />
+                            <Beef className="w-8 h-8 text-gray-400" />
                         </div>
                     </div>
 
