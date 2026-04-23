@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Farm;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +13,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call(FarmSeeder::class);
+
+        $defaultFarmId = Farm::query()->where('name', 'Makindu Farm')->value('id');
 
         User::factory()->create([
-            'name' => 'Admin Admin',
-            'email' => 'admin@admin.com',
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'farm_id' => $defaultFarmId,
         ]);
     }
 }

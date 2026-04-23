@@ -64,7 +64,7 @@ export default function Dashboard({
         <AppLayout breadcrumbs={[{ title: 'Dashboard', href: dashboard() }]}>
             <Head title="Dashboard" />
 
-            <div className="space-y-6 p-4">
+            <div className="mx-auto w-full max-w-7xl space-y-6 p-4">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h1 className="text-3xl font-bold">Farm Dashboard</h1>
