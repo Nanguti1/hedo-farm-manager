@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
+use App\Models\ExpenseCategory;
+use App\Models\IncomeCategory;
 use App\Services\FinanceService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -34,6 +35,8 @@ class TransactionController extends Controller
 
         return Inertia::render('Transactions/Create', [
             'type' => $type,
+            'incomeCategories' => IncomeCategory::query()->select('id', 'name')->orderBy('name')->get(),
+            'expenseCategories' => ExpenseCategory::query()->select('id', 'name')->orderBy('name')->get(),
         ]);
     }
 
@@ -52,7 +55,7 @@ class TransactionController extends Controller
                 'transaction_date' => 'required|date',
                 'reference' => 'nullable|string|max:255',
             ]);
-            $transaction = $this->financeService->recordIncome($farmId, $validated);
+            $this->financeService->recordIncome($farmId, $validated);
         } elseif ($type === 'expense') {
             $validated = $request->validate([
                 'expense_category_id' => 'required|exists:expense_categories,id',
@@ -61,7 +64,7 @@ class TransactionController extends Controller
                 'transaction_date' => 'required|date',
                 'reference' => 'nullable|string|max:255',
             ]);
-            $transaction = $this->financeService->recordExpense($farmId, $validated);
+            $this->financeService->recordExpense($farmId, $validated);
         } else {
             return back()->with('error', 'Invalid transaction type. Must be income or expense.');
         }

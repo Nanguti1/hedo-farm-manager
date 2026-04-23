@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified', 'ensure.farm.access'])
             Route::post('/', [TaskController::class, 'store'])->name('store');
             Route::get('/{task}', [TaskController::class, 'show'])->name('show');
             Route::get('/{task}/edit', [TaskController::class, 'edit'])->name('edit');
+            Route::put('/{task}', [TaskController::class, 'update'])->name('update');
             Route::post('/{task}/assign/{user}', [TaskController::class, 'assign'])->name('assign');
             Route::post('/{task}/complete', [TaskController::class, 'complete'])->name('complete');
         });

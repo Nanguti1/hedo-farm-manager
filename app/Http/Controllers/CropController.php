@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCropCycleRequest;
 use App\Http\Requests\UpdateCropCycleRequest;
+use App\Models\Crop;
 use App\Models\CropCycle;
+use App\Models\Field;
 use App\Services\CropService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,7 +35,12 @@ class CropController extends Controller
     {
         $this->authorize('create crop cycles');
 
-        return Inertia::render('Crops/Create');
+        $farmId = auth()->user()->farm_id;
+
+        return Inertia::render('Crops/Create', [
+            'fields' => Field::query()->where('farm_id', $farmId)->select('id', 'name')->orderBy('name')->get(),
+            'crops' => Crop::query()->where('farm_id', $farmId)->select('id', 'name')->orderBy('name')->get(),
+        ]);
     }
 
     public function store(StoreCropCycleRequest $request): RedirectResponse
@@ -63,10 +70,13 @@ class CropController extends Controller
     {
         $this->authorize('edit crop cycles');
 
+        $farmId = auth()->user()->farm_id;
         $cycle = $this->cropService->getCropCycleById($cycle->id);
 
         return Inertia::render('Crops/Edit', [
             'cycle' => $cycle,
+            'fields' => Field::query()->where('farm_id', $farmId)->select('id', 'name')->orderBy('name')->get(),
+            'crops' => Crop::query()->where('farm_id', $farmId)->select('id', 'name')->orderBy('name')->get(),
         ]);
     }
 
@@ -92,7 +102,7 @@ class CropController extends Controller
             'quality_grade' => 'nullable|string|max:50',
         ]);
 
-        $yield = $this->cropService->recordYield($cycle, $validated);
+        $this->cropService->recordYield($cycle, $validated);
 
         return redirect()
             ->route('crops.show', $cycle->id)

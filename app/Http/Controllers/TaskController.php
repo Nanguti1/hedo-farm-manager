@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
 use App\Models\Task;
+use App\Models\User;
 use App\Services\TaskService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -63,9 +64,11 @@ class TaskController extends Controller
         $this->authorize('view', $task);
 
         $task = $this->taskService->getTaskById($task->id);
+        $farmId = auth()->user()->farm_id;
 
         return Inertia::render('Tasks/Show', [
             'task' => $task,
+            'users' => User::query()->where('farm_id', $farmId)->select('id', 'name')->orderBy('name')->get(),
         ]);
     }
 
@@ -78,6 +81,18 @@ class TaskController extends Controller
         return Inertia::render('Tasks/Edit', [
             'task' => $task,
         ]);
+    }
+
+
+    public function update(StoreTaskRequest $request, Task $task): RedirectResponse
+    {
+        $this->authorize('update', $task);
+
+        $task->update($request->validated());
+
+        return redirect()
+            ->route('tasks.show', $task->id)
+            ->with('success', 'Task updated successfully');
     }
 
     public function assign(Task $task, int $userId): RedirectResponse
@@ -95,7 +110,7 @@ class TaskController extends Controller
     {
         $this->authorize('edit tasks');
 
-        $task = $this->taskService->completeTask($task);
+        $this->taskService->completeTask($task);
 
         return redirect()
             ->route('tasks.show', $task->id)
