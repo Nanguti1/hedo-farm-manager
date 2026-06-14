@@ -15,7 +15,9 @@ export default function AppSidebarLayout({
             <AppContent variant="sidebar" className="overflow-x-hidden">
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
                 <FlashMessage />
-                {children}
+                <div className="w-full flex-1 p-4 lg:p-6">
+                    {children}
+                </div>
             </AppContent>
         </AppShell>
     );

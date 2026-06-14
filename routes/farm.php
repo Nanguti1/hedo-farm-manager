@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CropController;
 use App\Http\Controllers\FarmController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +38,9 @@ Route::middleware(['auth', 'verified', 'ensure.farm.access'])
             Route::get('/create', [InventoryController::class, 'create'])->name('create');
             Route::post('/', [InventoryController::class, 'store'])->name('store');
             Route::get('/{item}', [InventoryController::class, 'show'])->name('show');
+            Route::get('/{item}/edit', [InventoryController::class, 'edit'])->name('edit');
+            Route::put('/{item}', [InventoryController::class, 'update'])->name('update');
+            Route::delete('/{item}', [InventoryController::class, 'destroy'])->name('destroy');
             Route::post('/{item}/stock', [InventoryController::class, 'updateStock'])->name('stock');
         });
 
@@ -68,5 +74,21 @@ Route::middleware(['auth', 'verified', 'ensure.farm.access'])
             Route::get('/{order}', [OrderController::class, 'show'])->name('show');
             Route::post('/{order}/items', [OrderController::class, 'addItem'])->name('items');
             Route::post('/product-batches', [OrderController::class, 'generateBatch'])->name('batches');
+        });
+
+        // Schedule Management
+        Route::resource('schedules', ScheduleController::class);
+
+        // Contacts Management
+        Route::resource('contacts', ContactController::class);
+
+        // Reports
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/', [ReportController::class, 'index'])->name('index');
+            Route::get('/financial', [ReportController::class, 'financial'])->name('financial');
+            Route::get('/livestock', [ReportController::class, 'livestock'])->name('livestock');
+            Route::get('/inventory', [ReportController::class, 'inventory'])->name('inventory');
+            Route::get('/tasks', [ReportController::class, 'tasks'])->name('tasks');
+            Route::get('/crops', [ReportController::class, 'crops'])->name('crops');
         });
     });

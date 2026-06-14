@@ -1,18 +1,18 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
-    BookOpen,
+    BarChart3,
+    Beef,
+    CalendarDays,
     CheckSquare,
     DollarSign,
-    FolderGit2,
     LayoutGrid,
     Package,
     ShoppingCart,
     Sprout,
     Tractor,
-    Beef,
+    Users,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -20,9 +20,6 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
@@ -49,62 +46,54 @@ export function AppSidebar() {
         ...(permissions.includes('view farms')
             ? [{ title: 'Farms', href: '/farms', icon: Tractor }]
             : []),
-        ...(permissions.includes('view animals')
-            ? [{ title: 'Livestock', href: '/animals', icon: Beef }]
-            : []),
-        ...(permissions.includes('view crop cycles')
-            ? [{ title: 'Crops', href: '/crops', icon: Sprout }]
-            : []),
-        ...(permissions.includes('view inventory')
-            ? [{ title: 'Inventory', href: '/inventory', icon: Package }]
-            : []),
-        ...(permissions.includes('view transactions')
-            ? [{ title: 'Finance', href: '/transactions', icon: DollarSign }]
+        ...(permissions.includes('view schedules')
+            ? [{ title: 'Schedule', href: '/schedules', icon: CalendarDays }]
             : []),
         ...(permissions.includes('view tasks')
             ? [{ title: 'Tasks', href: '/tasks', icon: CheckSquare }]
             : []),
+        ...(permissions.includes('view animals')
+            ? [{ title: 'Livestock', href: '/animals', icon: Beef }]
+            : []),
+        ...(permissions.includes('view crop cycles')
+            ? [{ title: 'Plantings', href: '/crops', icon: Sprout }]
+            : []),
+        ...(permissions.includes('view inventory')
+            ? [{ title: 'Resources', href: '/inventory', icon: Package }]
+            : []),
+        ...(permissions.includes('view transactions')
+            ? [{ title: 'Accounting', href: '/transactions', icon: DollarSign }]
+            : []),
         ...(permissions.includes('view orders')
-            ? [{ title: 'Sales', href: '/orders', icon: ShoppingCart }]
+            ? [{ title: 'Market', href: '/orders', icon: ShoppingCart }]
+            : []),
+        ...(permissions.includes('view contacts')
+            ? [{ title: 'Contacts', href: '/contacts', icon: Users }]
+            : []),
+        ...(permissions.includes('view reports')
+            ? [{ title: 'Reports', href: '/reports', icon: BarChart3 }]
             : []),
     ];
 
-    const footerNavItems: NavItem[] = [
-        {
-            title: 'Repository',
-            href: 'https://github.com/laravel/react-starter-kit',
-            icon: FolderGit2,
-        },
-        {
-            title: 'Documentation',
-            href: 'https://laravel.com/docs/starter-kits#react',
-            icon: BookOpen,
-        },
-    ];
 
     return (
         <Sidebar collapsible="icon" variant="sidebar">
             <SidebarHeader>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
-                                <AppLogo />
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                <div className="flex h-16 items-center px-2 group-data-[collapsible=icon]/sidebar-wrapper:h-12">
+                    <Link href={dashboard()} prefetch className="flex items-center gap-2">
+                        <AppLogo />
+                    </Link>
+                </div>
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={mainNavItems} label="Platform" />
                 {farmNavItems.length > 0 ? (
-                    <NavMain items={farmNavItems} />
+                    <NavMain items={farmNavItems} label="Farm" />
                 ) : null}
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

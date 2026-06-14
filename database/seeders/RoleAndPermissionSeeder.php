@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class RoleAndPermissionSeeder extends Seeder
 {
@@ -15,7 +15,7 @@ class RoleAndPermissionSeeder extends Seeder
     public function run(): void
     {
         // Reset cached roles and permissions
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Create permissions
         $permissions = [
@@ -75,6 +75,21 @@ class RoleAndPermissionSeeder extends Seeder
             'delete orders',
             'view product batches',
 
+            // Schedule Management
+            'view schedules',
+            'create schedules',
+            'edit schedules',
+            'delete schedules',
+
+            // Contact Management
+            'view contacts',
+            'create contacts',
+            'edit contacts',
+            'delete contacts',
+
+            // Reports
+            'view reports',
+
             // User Management
             'view users',
             'create users',
@@ -128,6 +143,15 @@ class RoleAndPermissionSeeder extends Seeder
             'view users',
             'create users',
             'edit users',
+            'view schedules',
+            'create schedules',
+            'edit schedules',
+            'delete schedules',
+            'view contacts',
+            'create contacts',
+            'edit contacts',
+            'delete contacts',
+            'view reports',
         ]);
 
         $worker = Role::firstOrCreate(['name' => 'Worker', 'guard_name' => 'web']);
@@ -149,6 +173,9 @@ class RoleAndPermissionSeeder extends Seeder
             'edit tasks',
             'view orders',
             'view product batches',
+            'view schedules',
+            'create schedules',
+            'view contacts',
         ]);
     }
 }

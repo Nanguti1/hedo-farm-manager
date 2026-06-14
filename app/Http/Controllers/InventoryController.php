@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreInventoryItemRequest;
+use App\Http\Requests\UpdateInventoryItemRequest;
 use App\Models\InventoryCategory;
 use App\Models\InventoryItem;
 use App\Services\InventoryService;
@@ -59,6 +60,40 @@ class InventoryController extends Controller
         return Inertia::render('Inventory/Show', [
             'item' => $item,
         ]);
+    }
+
+    public function edit(InventoryItem $item): Response
+    {
+        $this->authorize('edit inventory items');
+
+        $item = $this->inventoryService->getInventoryItemById($item->id);
+
+        return Inertia::render('Inventory/Edit', [
+            'item' => $item,
+            'categories' => InventoryCategory::query()->select('id', 'name')->orderBy('name')->get(),
+        ]);
+    }
+
+    public function update(UpdateInventoryItemRequest $request, InventoryItem $item): RedirectResponse
+    {
+        $this->authorize('edit inventory items');
+
+        $this->inventoryService->updateInventoryItem($item, $request->validated());
+
+        return redirect()
+            ->route('inventory.show', $item->id)
+            ->with('success', 'Inventory item updated successfully');
+    }
+
+    public function destroy(InventoryItem $item): RedirectResponse
+    {
+        $this->authorize('delete inventory items');
+
+        $item->delete();
+
+        return redirect()
+            ->route('inventory.index')
+            ->with('success', 'Inventory item deleted successfully');
     }
 
     public function updateStock(InventoryItem $item, Request $request): RedirectResponse

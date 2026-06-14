@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Actions\CreateInventoryItem;
 use App\Actions\RecordInventoryTransaction;
+use App\Actions\UpdateInventoryItem;
 use App\Actions\UpdateInventoryStock;
 use App\Models\InventoryItem;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -12,6 +13,7 @@ class InventoryService
 {
     public function __construct(
         private CreateInventoryItem $createInventoryItem,
+        private UpdateInventoryItem $updateInventoryItem,
         private UpdateInventoryStock $updateInventoryStock,
         private RecordInventoryTransaction $recordInventoryTransaction,
     ) {}
@@ -20,7 +22,7 @@ class InventoryService
     {
         return InventoryItem::query()
             ->where('farm_id', $farmId)
-            ->with(['category', 'transactions' => fn($q) => $q->latest()->limit(5)])
+            ->with(['category', 'transactions' => fn ($q) => $q->latest()->limit(5)])
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }
@@ -35,6 +37,11 @@ class InventoryService
     public function createInventoryItem(int $farmId, array $data): InventoryItem
     {
         return $this->createInventoryItem->execute($farmId, $data);
+    }
+
+    public function updateInventoryItem(InventoryItem $item, array $data): InventoryItem
+    {
+        return $this->updateInventoryItem->execute($item, $data);
     }
 
     public function updateStock(InventoryItem $item, float $quantity, string $type): InventoryItem

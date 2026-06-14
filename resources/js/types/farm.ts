@@ -1,4 +1,12 @@
 // Farm Types
+export interface FarmFormData {
+    name: string;
+    location: string;
+    size: number;
+    description: string;
+    is_active: boolean;
+}
+
 export interface Farm {
     id: number;
     name: string;
@@ -210,6 +218,91 @@ export interface ProductBatch {
     production_date: string;
     notes: string | null;
     created_at: string;
+}
+
+// Schedule Types
+export interface Schedule {
+    id: number;
+    farm_id: number;
+    title: string;
+    description: string | null;
+    scheduled_date: string;
+    start_time: string | null;
+    end_time: string | null;
+    type: 'task' | 'event' | 'reminder';
+    status: 'scheduled' | 'completed' | 'cancelled';
+    related_task_id: number | null;
+    related_task?: Pick<Task, 'id' | 'title'> | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ScheduleFormData {
+    title: string;
+    description?: string;
+    scheduled_date: string;
+    start_time?: string;
+    end_time?: string;
+    type: 'task' | 'event' | 'reminder';
+    status: 'scheduled' | 'completed' | 'cancelled';
+    related_task_id?: number | null;
+}
+
+// Contact Types
+export interface Contact {
+    id: number;
+    farm_id: number;
+    name: string;
+    type: 'supplier' | 'customer' | 'vet' | 'contractor' | 'other';
+    phone: string | null;
+    email: string | null;
+    address: string | null;
+    notes: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ContactFormData {
+    name: string;
+    type: 'supplier' | 'customer' | 'vet' | 'contractor' | 'other';
+    phone?: string;
+    email?: string;
+    address?: string;
+    notes?: string;
+}
+
+// Report Types
+export interface MonthlyFinancialData {
+    month: number;
+    month_name: string;
+    income: number;
+    expense: number;
+}
+
+export interface FinancialTotals {
+    total_income: number;
+    total_expense: number;
+    net: number;
+}
+
+export interface StatusCount {
+    status: string;
+    total: number;
+}
+
+export interface PriorityCount {
+    priority: string;
+    total: number;
+}
+
+export interface CategoryCount {
+    category: string;
+    total: number;
+}
+
+export interface GenderCount {
+    gender: string;
+    total: number;
 }
 
 // User Types
