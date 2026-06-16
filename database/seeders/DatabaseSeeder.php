@@ -13,14 +13,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(FarmSeeder::class);
+        $this->call([
+            FarmSeeder::class,
+            RoleAndPermissionSeeder::class,
+        ]);
 
         $defaultFarmId = Farm::query()->where('name', 'Makindu Farm')->value('id');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $user = User::factory()->create([
+            'name' => 'Nanguti - SA',
+            'email' => 'g.nanguti@gmail.com',
             'farm_id' => $defaultFarmId,
         ]);
+
+        $user->assignRole('Admin');
     }
 }

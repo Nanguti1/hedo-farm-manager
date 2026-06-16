@@ -19,6 +19,7 @@ class StoreTaskRequest extends FormRequest
             'status' => 'required|in:pending,in_progress,completed',
             'priority' => 'required|in:low,medium,high',
             'due_date' => 'nullable|date',
+            'assigned_to' => 'nullable|exists:users,id',
         ];
     }
 }

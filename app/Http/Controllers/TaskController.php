@@ -7,6 +7,7 @@ use App\Models\Task;
 use App\Models\User;
 use App\Services\TaskService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -20,7 +21,7 @@ class TaskController extends Controller
     {
         $this->authorize('view tasks');
 
-        $farmId = auth()->user()->farm_id;
+        $farmId = Auth::user()->farm_id;
         $tasks = $this->taskService->getTasksByFarm($farmId);
 
         return Inertia::render('Tasks/Index', [
@@ -32,7 +33,7 @@ class TaskController extends Controller
     {
         $this->authorize('view tasks');
 
-        $userId = auth()->id();
+        $userId = Auth::id();
         $tasks = $this->taskService->getUserTasks($userId);
 
         return Inertia::render('Tasks/MyTasks', [
@@ -44,15 +45,32 @@ class TaskController extends Controller
     {
         $this->authorize('create tasks');
 
-        return Inertia::render('Tasks/Create');
+        $farmId = Auth::user()->farm_id;
+
+        return Inertia::render('Tasks/Create', [
+            'users' => User::query()
+                ->where('farm_id', $farmId)
+                ->select('id', 'name')
+                ->orderBy('name')
+                ->get(),
+        ]);
     }
 
     public function store(StoreTaskRequest $request): RedirectResponse
     {
         $this->authorize('create tasks');
 
-        $farmId = auth()->user()->farm_id;
-        $task = $this->taskService->createTask($farmId, $request->validated());
+        $validated = $request->validated();
+        $assignedTo = $validated['assigned_to'] ?? null;
+        unset($validated['assigned_to']);
+
+        $farmId = Auth::user()->farm_id;
+        $task = $this->taskService->createTask($farmId, $validated);
+
+        if ($assignedTo) {
+            $this->authorize('assign tasks');
+            $this->taskService->assignTask($task, (int) $assignedTo);
+        }
 
         return redirect()
             ->route('tasks.show', $task->id)
@@ -64,7 +82,7 @@ class TaskController extends Controller
         $this->authorize('view', $task);
 
         $task = $this->taskService->getTaskById($task->id);
-        $farmId = auth()->user()->farm_id;
+        $farmId = Auth::user()->farm_id;
 
         return Inertia::render('Tasks/Show', [
             'task' => $task,

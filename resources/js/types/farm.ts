@@ -376,6 +376,7 @@ export interface TaskFormData {
     status: 'pending' | 'in_progress' | 'completed';
     priority: 'low' | 'medium' | 'high';
     due_date?: string;
+    assigned_to?: string;
 }
 
 export interface TransactionFormData {

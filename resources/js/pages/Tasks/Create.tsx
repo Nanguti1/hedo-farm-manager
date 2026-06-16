@@ -4,11 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { TaskFormData } from '@/types/farm';
+import type { TaskFormData, User } from '@/types/farm';
 
-export default function TaskCreate() {
+export default function TaskCreate({ users }: { users: Pick<User, 'id' | 'name'>[] }) {
     const { data, setData, post, processing, errors } = useForm<TaskFormData>({
-        title: '', description: '', status: 'pending', priority: 'medium', due_date: '',
+        title: '', description: '', status: 'pending', priority: 'medium', due_date: '', assigned_to: '',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -28,6 +28,18 @@ export default function TaskCreate() {
                         <div><Label>Priority *</Label><Select value={data.priority} onValueChange={(v) => setData('priority', v as 'low' | 'medium' | 'high')}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="low">Low</SelectItem><SelectItem value="medium">Medium</SelectItem><SelectItem value="high">High</SelectItem></SelectContent></Select></div>
                         <div><Label>Status *</Label><Select value={data.status} onValueChange={(v) => setData('status', v as 'pending' | 'in_progress' | 'completed')}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="pending">Pending</SelectItem><SelectItem value="in_progress">In Progress</SelectItem><SelectItem value="completed">Completed</SelectItem></SelectContent></Select></div>
                         <div><Label>Due Date</Label><Input type="date" value={data.due_date} onChange={(e) => setData('due_date', e.target.value)}/></div>
+                        <div>
+                            <Label>Assign To</Label>
+                            <Select value={data.assigned_to} onValueChange={(value) => setData('assigned_to', value)}>
+                                <SelectTrigger><SelectValue placeholder="Select assignee" /></SelectTrigger>
+                                <SelectContent>
+                                    {users.map((user) => (
+                                        <SelectItem key={user.id} value={user.id.toString()}>{user.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {errors.assigned_to && <p className="text-sm text-red-600">{errors.assigned_to}</p>}
+                        </div>
                     </div>
                     <div className="flex justify-end gap-3"><Button type="button" variant="outline" onClick={() => window.history.back()}>Cancel</Button><Button type="submit" disabled={processing}>Add Task</Button></div>
                 </form>
