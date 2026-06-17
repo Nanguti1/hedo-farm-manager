@@ -6,11 +6,15 @@ import {
     CheckSquare,
     DollarSign,
     LayoutGrid,
+    Layers,
+    MapPin,
     Package,
     ShoppingCart,
     Sprout,
     Tractor,
+    UserRound,
     Users,
+    Shield,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
@@ -46,6 +50,24 @@ export function AppSidebar() {
         ...(permissions.includes('view farms')
             ? [{ title: 'Farms', href: '/farms', icon: Tractor }]
             : []),
+        ...(permissions.includes('view plantings')
+            ? [
+                  {
+                      title: 'Plantings',
+                      href: '/plantings',
+                      icon: Sprout,
+                      items: [
+                          { title: 'Crops', href: '/crops' },
+                          ...(permissions.includes('view grow locations')
+                              ? [{ title: 'Locations', href: '/grow-locations' }]
+                              : []),
+                          { title: 'Crop Plan', href: '/plantings/plan' },
+                          { title: 'Location Map', href: '/plantings/map' },
+                          { title: 'Yield Comparison', href: '/plantings/yield-comparison' },
+                      ],
+                  },
+              ]
+            : []),
         ...(permissions.includes('view schedules')
             ? [{ title: 'Schedule', href: '/schedules', icon: CalendarDays }]
             : []),
@@ -54,9 +76,6 @@ export function AppSidebar() {
             : []),
         ...(permissions.includes('view animals')
             ? [{ title: 'Livestock', href: '/animals', icon: Beef }]
-            : []),
-        ...(permissions.includes('view crop cycles')
-            ? [{ title: 'Plantings', href: '/crops', icon: Sprout }]
             : []),
         ...(permissions.includes('view inventory')
             ? [{ title: 'Resources', href: '/inventory', icon: Package }]
@@ -69,6 +88,12 @@ export function AppSidebar() {
             : []),
         ...(permissions.includes('view contacts')
             ? [{ title: 'Contacts', href: '/contacts', icon: Users }]
+            : []),
+        ...(permissions.includes('view users')
+            ? [{ title: 'Users', href: '/users', icon: UserRound }]
+            : []),
+        ...(permissions.includes('manage roles')
+            ? [{ title: 'Roles', href: '/roles', icon: Shield }]
             : []),
         ...(permissions.includes('view reports')
             ? [{ title: 'Reports', href: '/reports', icon: BarChart3 }]

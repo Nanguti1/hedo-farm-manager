@@ -4,12 +4,15 @@ use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CropController;
 use App\Http\Controllers\FarmController;
+use App\Http\Controllers\GrowLocationController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PlantingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'ensure.farm.access'])
@@ -17,9 +20,25 @@ Route::middleware(['auth', 'verified', 'ensure.farm.access'])
         // Farm Management (Admin Only)
         Route::resource('farms', FarmController::class);
 
+        // User Management
+        Route::resource('users', UserController::class);
+        Route::resource('roles', \App\Http\Controllers\RoleController::class);
+
         // Livestock Management
         Route::resource('animals', AnimalController::class);
         Route::post('animals/{animal}/health', [AnimalController::class, 'recordHealth'])->name('animals.health');
+
+        // Grow Location Management
+        Route::resource('grow-locations', GrowLocationController::class);
+
+        // Planting Management
+        Route::get('plantings/plan', [PlantingController::class, 'plan'])->name('plantings.plan');
+        Route::get('plantings/map', [PlantingController::class, 'map'])->name('plantings.map');
+        Route::get('plantings/yield-comparison', [PlantingController::class, 'yieldComparison'])->name('plantings.yield');
+        Route::resource('plantings', PlantingController::class);
+        Route::post('plantings/{planting}/harvest', [PlantingController::class, 'recordHarvest'])->name('plantings.harvest');
+        Route::post('plantings/{planting}/nutrient', [PlantingController::class, 'recordNutrient'])->name('plantings.nutrient');
+        Route::post('plantings/{planting}/treatment', [PlantingController::class, 'recordTreatment'])->name('plantings.treatment');
 
         // Crop Management
         Route::resource('crops', CropController::class)->names([

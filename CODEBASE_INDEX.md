@@ -16,7 +16,7 @@ This file summarizes the current repository structure, key entry points, and the
 
 ## 2. Top-Level Structure
 
-- `app/` — Core Laravel application PHP code (Models, Actions, Services, Controllers, Middleware, Policies, etc.)
+- `app/` — [Core Laravel application logic](./app/README.md) (Models, Actions, Services, Controllers, etc.)
 - `bootstrap/` — Application bootstrapping, configuration, and middleware registration
 - `config/` — Configuration files for framework, database, session, Fortify, etc.
 - `database/` — Database migrations, factories, and seeders
@@ -55,6 +55,8 @@ The application defines standard Eloquent models corresponding to domain entitie
 21. `ProductBatch` - Traceable batches of farm product linked to crop cycles
 22. `Schedule` - Recurring calendar schedules for operational processes
 23. `Contact` - Suppliers, vendors, customers, and partners
+24. `GrowLocation` - **STUB** (created 2026-06-16) - Dedicated grow locations (greenhouses, nurseries, orchards, containers) - not yet implemented
+25. `Planting` - **STUB** (created 2026-06-16) - Planting management with succession planning - not yet implemented
 
 ### B. Business Logic Services (`app/Services/`)
 Services orchestrate business logic across models, calling Actions and managing workflow-level logic:
@@ -104,6 +106,8 @@ Handling HTTP requests, session logic, and returning Inertia view rendering obje
 - `ContactController` - Contact directory and profile details
 - `Settings/ProfileController` - Personal details & security forms
 - `Settings/SecurityController` - Two-Factor Authentication & password updates
+- `GrowLocationController` - **STUB** (created 2026-06-16) - Grow location management - not yet implemented
+- `PlantingController` - **STUB** (created 2026-06-16) - Planting management - not yet implemented
 
 ---
 

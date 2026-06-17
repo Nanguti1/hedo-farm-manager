@@ -90,7 +90,154 @@ export interface Crop {
     id: number;
     farm_id: number;
     name: string;
+    scientific_name: string | null;
     category: string;
+    variety: string | null;
+    days_to_germination: number | null;
+    days_to_maturity: number | null;
+    frost_timing: string | null;
+    planting_depth: string | null;
+    spacing: string | null;
+    row_spacing: string | null;
+    light_needs: string | null;
+    water_needs: string | null;
+    expected_yield: string | null;
+    germination_rate: number | null;
+    seed_supplier: string | null;
+    seed_lot_number: string | null;
+}
+
+export interface GrowLocation {
+    id: number;
+    farm_id: number;
+    parent_id: number | null;
+    name: string;
+    type: 'field' | 'greenhouse' | 'nursery' | 'orchard' | 'container' | 'bed' | 'row';
+    area_size: number | null;
+    area_unit: string | null;
+    gps_coordinates: string | null;
+    polygon: any | null;
+    status: 'active' | 'inactive' | 'maintenance';
+    description: string | null;
+    created_at: string;
+    updated_at: string;
+    parent?: GrowLocation;
+    children?: GrowLocation[];
+}
+
+export interface Planting {
+    id: number;
+    farm_id: number;
+    crop_id: number;
+    grow_location_id: number;
+    variety: string | null;
+    season: string;
+    status: 'planned' | 'seeded' | 'transplanted' | 'growing' | 'harvested' | 'failed';
+    seed_start_date: string | null;
+    transplant_date: string | null;
+    direct_seed_date: string | null;
+    expected_harvest_date: string | null;
+    actual_harvest_date: string | null;
+    number_of_plants: number | null;
+    number_of_rows: number | null;
+    area_occupied: number | null;
+    area_unit: string | null;
+    succession_number: number;
+    notes: string | null;
+    created_at: string;
+    updated_at: string;
+    crop?: Crop;
+    growLocation?: GrowLocation;
+    harvests?: Harvest[];
+    nutrient_applications?: NutrientApplication[];
+    treatments?: Treatment[];
+}
+
+export interface Harvest {
+    id: number;
+    farm_id: number;
+    planting_id: number;
+    crop_id: number;
+    quantity: number;
+    unit: string;
+    quality_grade: string | null;
+    market_destination: string | null;
+    harvest_date: string;
+    notes: string | null;
+    created_at: string;
+}
+
+export interface NutrientApplication {
+    id: number;
+    farm_id: number;
+    grow_location_id: number | null;
+    planting_id: number | null;
+    fertilizer_type: string;
+    is_organic: boolean;
+    quantity: number;
+    unit: string;
+    application_method: string | null;
+    application_date: string;
+    cost: number | null;
+    applicator: string | null;
+    notes: string | null;
+    created_at: string;
+}
+
+export interface Treatment {
+    id: number;
+    farm_id: number;
+    grow_location_id: number | null;
+    planting_id: number | null;
+    treatment_type: string;
+    product_used: string;
+    active_ingredient: string | null;
+    dosage: string | null;
+    application_method: string | null;
+    application_date: string;
+    reentry_interval: string | null;
+    notes: string | null;
+    created_at: string;
+}
+
+export interface SoilSample {
+    id: number;
+    farm_id: number;
+    grow_location_id: number;
+    sample_date: string;
+    ph: number | null;
+    nitrogen: number | null;
+    phosphorus: number | null;
+    potassium: number | null;
+    organic_matter: number | null;
+    moisture: number | null;
+    lab_report_path: string | null;
+    notes: string | null;
+    created_at: string;
+}
+
+export interface CustomField {
+    id: number;
+    farm_id: number;
+    fieldable_id: number;
+    fieldable_type: string;
+    name: string;
+    value: string | null;
+    type: 'text' | 'number' | 'date' | 'boolean';
+}
+
+export interface NoteDocument {
+    id: number;
+    farm_id: number;
+    notable_id: number;
+    notable_type: string;
+    title: string | null;
+    content: string | null;
+    file_path: string | null;
+    file_type: string | null;
+    user_id: number;
+    created_at: string;
+    user?: User;
 }
 
 export interface YieldRecord {
@@ -393,4 +540,65 @@ export interface OrderFormData {
     customer_name: string;
     status: 'pending' | 'processing' | 'completed' | 'cancelled';
     order_date: string;
+}
+
+export interface GrowLocationFormData {
+    name: string;
+    type: 'field' | 'greenhouse' | 'nursery' | 'orchard' | 'container' | 'bed' | 'row';
+    parent_id?: number | null;
+    area_size?: number | null;
+    area_unit?: string;
+    gps_coordinates?: string;
+    status: 'active' | 'inactive' | 'maintenance';
+    description?: string;
+}
+
+export interface PlantingFormData {
+    crop_id: number;
+    grow_location_id: number;
+    variety?: string;
+    season: string;
+    status: 'planned' | 'seeded' | 'transplanted' | 'growing' | 'harvested' | 'failed';
+    seed_start_date?: string;
+    transplant_date?: string;
+    direct_seed_date?: string;
+    expected_harvest_date?: string;
+    number_of_plants?: number;
+    number_of_rows?: number;
+    area_occupied?: number;
+    area_unit?: string;
+    succession_number: number;
+    notes?: string;
+}
+
+export interface HarvestFormData {
+    quantity: number;
+    unit: string;
+    quality_grade?: string;
+    market_destination?: string;
+    harvest_date: string;
+    notes?: string;
+}
+
+export interface NutrientFormData {
+    fertilizer_type: string;
+    is_organic: boolean;
+    quantity: number;
+    unit: string;
+    application_method?: string;
+    application_date: string;
+    cost?: number;
+    applicator?: string;
+    notes?: string;
+}
+
+export interface TreatmentFormData {
+    treatment_type: string;
+    product_used: string;
+    active_ingredient?: string;
+    dosage?: string;
+    application_method?: string;
+    application_date: string;
+    reentry_interval?: string;
+    notes?: string;
 }
